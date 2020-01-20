@@ -15,11 +15,14 @@ const PRE_CATEGORY = 'category'
 let CATEGORY = ''
 const API_KEY = 'apiKey=37bff3af9fc5423b9c937c1f524a1c80'
 //TODO: Remove the key or do something
-const MAIN_ARTICLE_DIV = document.getElementById('main-article-div')
-const BATCH_SIZE = 3
+const MAIN_ARTICLE_UL = document.querySelector('.articles')
+const IMAGE_DIV = document.querySelector('.image')
+const SOURCE_DIV = document.querySelector('.source-link')
+const BATCH_SIZE = 5
 let CURRENT_PAGE = 1
-const DETAILS_DIV = document.getElementById('details-div')
-const SHOW_MORE_HEADLINES_BUTTON = document.getElementById('show-more-headlines-button')
+const TEXT_DIV = document.querySelector('.text')
+
+const SHOW_MORE_HEADLINES_BUTTON = document.querySelector('.more-btn')
 let allObjectsToPassAroundLater = {}
 const LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV = document.getElementById('language-and-country-selector-parent-div')
 const LANGUAGE_OPTIONS_ARRAY = ["en","tr","ar",'pt','ru']
@@ -30,10 +33,11 @@ const newLanguageAndCountrySelectionForm = document.createElement('form')
 const TICKER_ELEMENT = document.getElementById('ticker-content')
 let tempElement = []
 let showTickerCoreFunction = null
+let thisIsInitialOneOnThePage = true
 
 //FUNCTIONS
 function getTheHeadlines_INITIAL(){
-    DETAILS_DIV.innerHTML = ''
+    TEXT_DIV.innerHTML = ''
     let urlToGetFrom = `${NEWSAPI_TOP_HEADLINES_BASE_URL}`+
     `${PRE_COUNTRY}${COUNTRY}`+
     `${PRE_LANGUAGE}${LANGUAGE}`+
@@ -51,10 +55,11 @@ function getAllTheHeadlinesThenKeepInSomeVariableAndThenRender(initialArticlesOb
 function renderPageForTheBatchSize(allObjectsToPassAroundLater) {
     let sliceLowerLimiit = (CURRENT_PAGE-1)*BATCH_SIZE
     let sliceUpperLimit = (CURRENT_PAGE)*BATCH_SIZE
-    MAIN_ARTICLE_DIV.innerHTML = ''
+    MAIN_ARTICLE_UL.innerHTML = ''
     if (showTickerCoreFunction != null){clearInterval(showTickerCoreFunction)}
     initiateOrUpdateTicker()
     allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit).forEach(showOneOfTheNewsOnThePage)
+    populateDetailsForThisArticle(allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit)[0])
     CURRENT_PAGE +=1
     }
 
@@ -74,27 +79,30 @@ function initiateOrUpdateTicker(){
 
 function showOneOfTheNewsOnThePage(article){
     let oneArticleDiv = document.createElement('div')
-    oneArticleDiv.classList.add("col-md-4")
     let title = document.createElement('h2')
     title.innerText = article.title
     title.addEventListener('click',()=>populateDetailsForThisArticle(article))
-    let urlForTheSource = document.createElement('a')
-    urlForTheSource.innerText = 'Go to Source'
-    urlForTheSource.href = article.url
     let sourceName = document.createElement('h4')
     sourceName.innerText = article.source.name
-    let image = document.createElement('img')
-    // image.src = article.urlToImage //TODO: Enable this line when we want to show the images
-    image.src = ''
-    oneArticleDiv.append(sourceName,title,urlForTheSource,image)
-    MAIN_ARTICLE_DIV.appendChild(oneArticleDiv)
+    oneArticleDiv.append(sourceName,title)
+    MAIN_ARTICLE_UL.appendChild(oneArticleDiv)      
 }
 
 function populateDetailsForThisArticle(article){
-    let detailsP = document.createElement('p')
+    let detailsP = document.createElement('h4')
     detailsP.innerText = article.content
-    DETAILS_DIV.innerHTML = ''
-    DETAILS_DIV.appendChild(detailsP)
+    TEXT_DIV.innerHTML = ''
+    TEXT_DIV.appendChild(detailsP)
+    let image = document.createElement('img')
+    image.src = article.urlToImage
+    image.classList.add('the-image-class')
+    IMAGE_DIV.innerHTML = ''
+    IMAGE_DIV.appendChild(image)
+    let urlForTheSource = document.createElement('a')
+    urlForTheSource.innerText = 'Go to Source'
+    urlForTheSource.href = article.url
+    SOURCE_DIV.innerHTML=''
+    SOURCE_DIV.appendChild(urlForTheSource)
 }
 
 function createFormToGetTheLanguaageAndCountrySelection(){
@@ -151,7 +159,8 @@ function initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections(){
         }
     })
     CATEGORY = `=${selectedCategories[0]}&`
-    newLanguageAndCountrySelectionForm.hidden = true
+    selectedCategories =[]
+    // newLanguageAndCountrySelectionForm.hidden = true
     getTheHeadlines_INITIAL()
 }
 
@@ -160,9 +169,13 @@ function startupActions(){
 }
 
 function decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles(){
+    // debugger
     if (CURRENT_PAGE*BATCH_SIZE > 20) {
+        thisIsInitialOneOnThePage = true
         getTheHeadlines_INITIAL()
+        console.log('getTheHeadlines_INITIAL()')
     } else {
+        thisIsInitialOneOnThePage = true
         renderPageForTheBatchSize(allObjectsToPassAroundLater)
 }
 }
@@ -170,5 +183,4 @@ function decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles(){
 //INITIAL LOADERS, UNRELATED EVENT LISTENERS
 
 document.body.onload = startupActions
-// SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',()=>renderPageForTheBatchSize(allObjectsToPassAroundLater))
 SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles)

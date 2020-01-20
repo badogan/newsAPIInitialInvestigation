@@ -1,0 +1,89 @@
+*,
+*::before,
+*::after
+{
+    margin: 0;
+    padding:0;
+    box-sizing:inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: burlywood;
+}
+
+div {
+    border: 1px solid black;
+    /* height: 300px;
+    width: 300px; */
+}
+section {
+    display: flex;
+    flex-direction: column;
+}
+
+.ticker {
+    width: 100%;
+}
+
+/* Will not be needed later */
+.language-and-country-selector-parent-div {
+    width: 100%;
+}
+
+.language-country{
+    width: 100%;
+}
+
+.nearly-everything {
+    width: 100%;
+    display: flex;
+}
+
+.left-articles-titles {
+    width: 50%;
+}
+
+.right-article-details {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    width: 100%;
+}
+
+.the-image-class {
+    max-width: 200px;
+}
+
+.text {
+    width: 100%;
+}
+
+.source-link {
+    width: 100%;
+}
+
+
+/* 
+
+    <section>
+    <div class='ticker'></div>
+    <div class='language-country'></div>
+    <div class='nearly-everything'>
+        <div class='left-articles-titles'>
+            <ul class='articles'></ul>
+            <a href="" class='more-btn'> </a>
+        </div>
+        <div class='right-article-details'>
+            <div class='image'></div>
+            <div class='text'></div>
+            <div class='source-link'></div>
+        </div>
+    </div>
+</section> */
