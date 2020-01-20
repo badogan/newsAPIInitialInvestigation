@@ -3,37 +3,6 @@ function get(URI) {
     return fetch(URI).then(response=>response.json())
 }
 
-function destroy(URI,id){
-    let configObj = {
-        method: "DELETE"
-    }
-    return fetch(`${URI}/${id}`,configObj).then(response=>response.json())
-}
-
-function post(URI,newObj){
-    let configObj = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(newObj)
-      };
-    return fetch(URI, configObj).then(response=>response.json())
-}
-
-function patch(URI,id,patchObj){
-    let patchData = {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-        body: JSON.stringify(patchObj)
-        };
-        return fetch(`${URI}${id}`,patchData).then(response=>response.json())
-}
-
 //CONSTANTS
 const NEWSAPI_TOP_HEADLINES_BASE_URL = 'https://newsapi.org/v2/top-headlines?'
 const PRE_COUNTRY = 'country'
@@ -58,6 +27,7 @@ const COUNTRY_OPTIONS_ARRAY = ["us","tr",'ae','de','pt','ru']
 const CATEGORIES_ARRAY = ['business','entertainment','general','health','science','sports','technology']
 let selectedCategories = []
 const newLanguageAndCountrySelectionForm = document.createElement('form')
+const TICKER_ELEMENT = document.getElementById('ticker-content')
 
 //FUNCTIONS
 function getTheHeadlines_INITIAL(){
@@ -72,17 +42,42 @@ function getTheHeadlines_INITIAL(){
 
 function getAllTheHeadlinesThenKeepInSomeVariableAndThenRender(initialArticlesObjectWithEverything){
     allObjectsToPassAroundLater = Object.assign({}, initialArticlesObjectWithEverything)
+    CURRENT_PAGE = 1
     renderPageForTheBatchSize(allObjectsToPassAroundLater)
 }
 
 function renderPageForTheBatchSize(allObjectsToPassAroundLater) {
-    //TODO: Refactor so that BATCH_SIZE and CURRENT_PAGE are taken into consideration
     let sliceLowerLimiit = (CURRENT_PAGE-1)*BATCH_SIZE
     let sliceUpperLimit = (CURRENT_PAGE)*BATCH_SIZE
     MAIN_ARTICLE_DIV.innerHTML = ''
+    initiateOrUpdateTicker()
     allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit).forEach(showOneOfTheNewsOnThePage)
     CURRENT_PAGE +=1
     }
+
+function initiateOrUpdateTicker(){
+    let tempElement = []
+    // allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit).forEach((item)=>{
+    allObjectsToPassAroundLater.articles.forEach((item)=>{
+        tempElement.push(item.title.split(' '))
+    })
+    let testN = 1
+    let firstPart = ''
+    let secondPart = ''
+    let showTickerCoreFunction = setInterval(function(){
+        firstPart = tempElement.flat().slice(testN).reduce((sum,element)=>sum+element+'  ')
+        secondPart = tempElement.flat().slice(0,testN).reduce((sum,element)=>sum+element+'  ')
+        // TICKER_ELEMENT.innerText = `${firstPart} ${secondPart}`
+        TICKER_ELEMENT.innerText = `${(firstPart+secondPart).slice(0,100)}`
+        // if (testN < tempElement.flat().length){
+        //     testN++
+        // } else{
+        //     testN =1
+        // }
+        testN++
+        // debugger
+    },700);
+}
 
 function showOneOfTheNewsOnThePage(article){
     let oneArticleDiv = document.createElement('div')
@@ -171,7 +166,16 @@ function startupActions(){
     createFormToGetTheLanguaageAndCountrySelection()
 }
 
+function decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles(){
+    if (CURRENT_PAGE*BATCH_SIZE > 20) {
+        getTheHeadlines_INITIAL()
+    } else {
+        renderPageForTheBatchSize(allObjectsToPassAroundLater)
+}
+}
+
 //INITIAL LOADERS, UNRELATED EVENT LISTENERS
 
 document.body.onload = startupActions
-SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',()=>renderPageForTheBatchSize(allObjectsToPassAroundLater))
+// SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',()=>renderPageForTheBatchSize(allObjectsToPassAroundLater))
+SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles)
