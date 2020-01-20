@@ -47,14 +47,14 @@ let CATEGORY = ''
 const API_KEY = 'apiKey=37bff3af9fc5423b9c937c1f524a1c80'
 //TODO: Remove the key or do something
 const MAIN_ARTICLE_DIV = document.getElementById('main-article-div')
-const BATCH_SIZE = 2
+const BATCH_SIZE = 3
 let CURRENT_PAGE = 1
 const DETAILS_DIV = document.getElementById('details-div')
 const SHOW_MORE_HEADLINES_BUTTON = document.getElementById('show-more-headlines-button')
 let allObjectsToPassAroundLater = {}
 const LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV = document.getElementById('language-and-country-selector-parent-div')
-const LANGUAGE_OPTIONS_ARRAY = ["en","tr","ar"]
-const COUNTRY_OPTIONS_ARRAY = ["us","tr",'ae','de']
+const LANGUAGE_OPTIONS_ARRAY = ["en","tr","ar",'pt','ru']
+const COUNTRY_OPTIONS_ARRAY = ["us","tr",'ae','de','pt','ru']
 const CATEGORIES_ARRAY = ['business','entertainment','general','health','science','sports','technology']
 let selectedCategories = []
 const newLanguageAndCountrySelectionForm = document.createElement('form')
@@ -86,6 +86,7 @@ function renderPageForTheBatchSize(allObjectsToPassAroundLater) {
 
 function showOneOfTheNewsOnThePage(article){
     let oneArticleDiv = document.createElement('div')
+    oneArticleDiv.classList.add("col-md-4")
     let title = document.createElement('h2')
     title.innerText = article.title
     title.addEventListener('click',()=>populateDetailsForThisArticle(article))
@@ -95,8 +96,8 @@ function showOneOfTheNewsOnThePage(article){
     let sourceName = document.createElement('h4')
     sourceName.innerText = article.source.name
     let image = document.createElement('img')
-    image.src = article.urlToImage //TODO: Enable this line when we want to show the images
-    // image.src = ''
+    // image.src = article.urlToImage //TODO: Enable this line when we want to show the images
+    image.src = ''
     oneArticleDiv.append(sourceName,title,urlForTheSource,image)
     MAIN_ARTICLE_DIV.appendChild(oneArticleDiv)
 }
