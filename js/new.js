@@ -7,12 +7,12 @@ function get(URI) {
 const NEWSAPI_TOP_HEADLINES_BASE_URL = 'https://newsapi.org/v2/top-headlines?'
 const PRE_COUNTRY = 'country'
 // let COUNTRY = '=us&'
-let COUNTRY = ''
+let COUNTRY = 'en'
 const PRE_LANGUAGE = 'language'
 // let LANGUAGE = '=en&'
-let LANGUAGE = ''
+let LANGUAGE = 'en'
 const PRE_CATEGORY = 'category'
-let CATEGORY = ''
+let CATEGORY = 'business'
 const API_KEY = 'apiKey=37bff3af9fc5423b9c937c1f524a1c80'
 //TODO: Remove the key or do something
 const MAIN_ARTICLE_UL = document.querySelector('.articles')
@@ -43,6 +43,7 @@ function getTheHeadlines_INITIAL(){
     `${PRE_LANGUAGE}${LANGUAGE}`+
     `${PRE_CATEGORY}${CATEGORY}`+
     `${API_KEY}`
+    console.log(urlToGetFrom)
     get(urlToGetFrom).then(getAllTheHeadlinesThenKeepInSomeVariableAndThenRender)
 }
 
@@ -67,14 +68,15 @@ function initiateOrUpdateTicker(){
     tempElement = []
     // allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit).forEach((item)=>{
     allObjectsToPassAroundLater.articles.forEach((item)=>{
+        tempElement.push('<<<')
         tempElement.push(item.title.split(' '))
     })
     let testN = CURRENT_PAGE * 20
     showTickerCoreFunction = setInterval(function(){
         allParts = tempElement.flat().slice(testN,testN+20).reduce((sum,element)=>sum+element+' ')
-        TICKER_ELEMENT.innerText = `${allParts.slice(0,97)}`
+        TICKER_ELEMENT.innerText = `${allParts.slice(0,130)}`
         if (testN > (tempElement.flat().length-100)){testN = 1} else {testN++}
-    },500);
+    },600);
 }
 
 function showOneOfTheNewsOnThePage(article){
@@ -101,6 +103,7 @@ function populateDetailsForThisArticle(article){
     let urlForTheSource = document.createElement('a')
     urlForTheSource.innerText = 'Go to Source'
     urlForTheSource.href = article.url
+    urlForTheSource.target = '_blank'
     SOURCE_DIV.innerHTML=''
     SOURCE_DIV.appendChild(urlForTheSource)
 }
@@ -169,11 +172,9 @@ function startupActions(){
 }
 
 function decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles(){
-    // debugger
     if (CURRENT_PAGE*BATCH_SIZE > 20) {
         thisIsInitialOneOnThePage = true
         getTheHeadlines_INITIAL()
-        console.log('getTheHeadlines_INITIAL()')
     } else {
         thisIsInitialOneOnThePage = true
         renderPageForTheBatchSize(allObjectsToPassAroundLater)
