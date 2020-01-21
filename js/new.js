@@ -13,6 +13,9 @@ const PRE_LANGUAGE = 'language'
 let LANGUAGE = 'en'
 const PRE_CATEGORY = 'category'
 let CATEGORY = 'business'
+const PRE_PAGE = 'page'
+let API_PAGE_INDICATOR = 1
+let MAX_API_PAGE_INDICATOR = 1
 const API_KEY = 'apiKey=37bff3af9fc5423b9c937c1f524a1c80'
 //TODO: Remove the key or do something
 const MAIN_ARTICLE_UL = document.querySelector('.articles')
@@ -21,7 +24,6 @@ const SOURCE_DIV = document.querySelector('.source-link')
 const BATCH_SIZE = 5
 let CURRENT_PAGE = 1
 const TEXT_DIV = document.querySelector('.text')
-
 const SHOW_MORE_HEADLINES_BUTTON = document.querySelector('.more-btn')
 let allObjectsToPassAroundLater = {}
 const LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV = document.getElementById('language-and-country-selector-parent-div')
@@ -38,10 +40,12 @@ let thisIsInitialOneOnThePage = true
 //FUNCTIONS
 function getTheHeadlines_INITIAL(){
     TEXT_DIV.innerHTML = ''
+    PAGE = `=${API_PAGE_INDICATOR}&`
     let urlToGetFrom = `${NEWSAPI_TOP_HEADLINES_BASE_URL}`+
     `${PRE_COUNTRY}${COUNTRY}`+
     `${PRE_LANGUAGE}${LANGUAGE}`+
     `${PRE_CATEGORY}${CATEGORY}`+
+    `${PRE_PAGE}${PAGE}` +
     `${API_KEY}`
     console.log(urlToGetFrom)
     get(urlToGetFrom).then(getAllTheHeadlinesThenKeepInSomeVariableAndThenRender)
@@ -50,6 +54,13 @@ function getTheHeadlines_INITIAL(){
 function getAllTheHeadlinesThenKeepInSomeVariableAndThenRender(initialArticlesObjectWithEverything){
     allObjectsToPassAroundLater = Object.assign({}, initialArticlesObjectWithEverything)
     CURRENT_PAGE = 1
+    MAX_API_PAGE_INDICATOR = parseInt(allObjectsToPassAroundLater.totalResults/20)
+    if (API_PAGE_INDICATOR < MAX_API_PAGE_INDICATOR) {
+        API_PAGE_INDICATOR++
+    } else {
+        API_PAGE_INDICATOR=1
+    }
+    console.log(API_PAGE_INDICATOR)
     renderPageForTheBatchSize(allObjectsToPassAroundLater)
 }
 
@@ -151,6 +162,7 @@ function createFormToGetTheLanguaageAndCountrySelection(){
 
 function initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections(){
     event.preventDefault()
+    API_PAGE_INDICATOR =1 
     let LANGUAGE_SELECTION = document.getElementById('select-language')
     LANGUAGE = `=${LANGUAGE_SELECTION.value}&`
     let COUNTRY_SELECTION = document.getElementById('select-country')
