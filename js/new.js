@@ -112,12 +112,12 @@ function initiateOrUpdateTicker(){
         tempElement.push('<<<')
         tempElement.push(item.title.split(' '))
     })
-    let testN = CURRENT_PAGE * 20
+    let tickerScale = CURRENT_PAGE * 20
     showTickerCoreFunction = setInterval(function(){
-        allParts = tempElement.flat().slice(testN,testN+20).reduce((sum,element)=>sum+element+' ')
-        TICKER_ELEMENT.innerText = `${allParts.slice(0,130)}`
-        if (testN > (tempElement.flat().length-100)){testN = 1} else {testN++}
-    },600);
+        allParts = tempElement.flat().slice(tickerScale,tickerScale+20).reduce((sum,element)=>sum+element+' ')
+        TICKER_ELEMENT.innerText = `${allParts.slice(0,100)}`
+        if (tickerScale > (tempElement.flat().length-100)){tickerScale = 1} else {tickerScale++}
+    },500);
 }
 
 function showOneOfTheNewsOnThePage(article){
@@ -125,15 +125,24 @@ function showOneOfTheNewsOnThePage(article){
     oneArticleDiv.classList.add('oneArticleDiv')
     let title = document.createElement('h2')
     title.innerText = article.title
+    title.style.cursor = "pointer"
     title.addEventListener('click',()=>populateDetailsForThisArticle(article))
     let sourceName = document.createElement('h4')
+    sourceName.classList.add('source-name')
     sourceName.innerText = article.source.name
     let saveForLaterButton = document.createElement('button')
     saveForLaterButton.classList.add('saveForLaterButton')
+    saveForLaterButton.style.border = 'none'
+    saveForLaterButton.style.backgroundColor = "rgb(240, 239, 239)"
     saveForLaterButton.innerText = "Save for Later"
+    saveForLaterButton.style.cursor = "pointer"
     saveForLaterButton.hidden = !IS_USER_LOGGED_IN
     saveForLaterButton.addEventListener("click",()=>saveForLaterButtonAction(article,saveForLaterButton))
-    oneArticleDiv.append(sourceName,saveForLaterButton,title)
+    let divSourceNameAndSaveForLaterButton = document.createElement('div')
+    divSourceNameAndSaveForLaterButton.append(sourceName,saveForLaterButton)
+    divSourceNameAndSaveForLaterButton.classList.add('divSourceNameAndSaveForLaterButton')
+    MAIN_ARTICLE_UL.appendChild(divSourceNameAndSaveForLaterButton)
+    oneArticleDiv.appendChild(title)
     MAIN_ARTICLE_UL.appendChild(oneArticleDiv)      
 }
 
@@ -148,6 +157,7 @@ function saveForLaterButtonAction(article,saveForLaterButton){
 function populateDetailsForThisArticle(article){
     let detailsP = document.createElement('h4')
     detailsP.innerText = article.content
+    detailsP.style.fontSize = "x-large"
     TEXT_DIV.innerHTML = ''
     TEXT_DIV.appendChild(detailsP)
     let image = document.createElement('img')
