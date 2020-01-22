@@ -8,20 +8,38 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="theMainDiv">
     <section>
-
-            <div id="language-and-country-selector-parent-div" class="jumbotron">
+        <div class='parent-of-test1-and-login-and-signup-forms'>
+            <div class="test1" id="language-and-country-selector-parent-div" class="jumbotron">
                     <!-- put the language and country selector form here -->
                   </div>
-        
+
+                  <div class='login-and-signup-forms'>
+                        <form id="new-user-form">
+                                <label for="new-user-name">New User Name</label>
+                                <input type="text" class="form-control" id="new-user-name" placeholder="Please enter your name...">
+                                <label for="new-user-password">Password</label>
+                                <input type="password" class="form-control" id="new-user-password" placeholder="Please enter password...">
+                                <label for="new-user-password-reentry">Password Confirmation</label>
+                                <input type="password" class="form-control" id="new-user-password-confirmation" placeholder="Please enter password again...">
+                                <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                        <form id="user-login-form">
+                                <label for="login-user-name">Login User Name</label>
+                                <input type="text" class="form-control" id="login-user-name" placeholder="Please enter your name...">
+                                <label for="login-user-password">Password</label>
+                                <input type="password" class="form-control" id="login-user-password" placeholder="Please enter password...">
+                                <button type="submit" class="btn btn-primary">LOGIN!</button>
+                        </form>
+                        <div id='logged-in-user-details'>
+                        </div>
+                  </div>
+        </div>
+
         <div class='ticker'>
             <!-- This will consume 100% horizontally -->
             <h1 id='ticker-content'></h1>
-        </div>
-        
-        <div class='language-country'>
-            <!-- This will consume 100% horizontally -->
-            <h4>inside language-country</h4>
         </div>
         
         <div class='nearly-everything'>
@@ -30,7 +48,7 @@
             <div class='left-articles-titles'>
                 <!-- This will consume 50% horizontally -->
                 <ul class='articles'>
-                    <li>A sample</li>
+                    <!-- <li>A sample</li> -->
                 </ul>
                 <button class='more-btn'> BRING MORE NEWS!</button>
             </div>
@@ -43,6 +61,7 @@
             </div>
         </div>
     </section>
+</div>
     <script src='js/new.js'></script>
 </body>
 </html>

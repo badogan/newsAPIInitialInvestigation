@@ -3,35 +3,13 @@ function get(URI) {
     return fetch(URI).then(response=>response.json())
 }
 
-function post(URI,newObj){
-    let configObj = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(newObj)
-      };
-    return fetch(URI, configObj).then(response=>response.json())
-}
-
-function patch(URI,id,patchObj){
-    let patchData = {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-        body: JSON.stringify(patchObj)
-        };
-        return fetch(`${URI}${id}`,patchData).then(response=>response.json())
-}
-
 //CONSTANTS
 const NEWSAPI_TOP_HEADLINES_BASE_URL = 'https://newsapi.org/v2/top-headlines?'
 const PRE_COUNTRY = 'country'
+// let COUNTRY = '=us&'
 let COUNTRY = 'en'
 const PRE_LANGUAGE = 'language'
+// let LANGUAGE = '=en&'
 let LANGUAGE = 'en'
 const PRE_CATEGORY = 'category'
 let CATEGORY = 'business'
@@ -58,17 +36,6 @@ const TICKER_ELEMENT = document.getElementById('ticker-content')
 let tempElement = []
 let showTickerCoreFunction = null
 let thisIsInitialOneOnThePage = true
-let LOGGED_IN_USER =''
-let IS_USER_LOGGED_IN = false
-const NEW_USER_FORM = document.getElementById('new-user-form')
-const NEW_USER_NAME = document.getElementById('new-user-name')
-const NEW_USER_PASSWORD = document.getElementById('new-user-password')
-const NEW_USER_PASSWORD_CONFIRMATION = document.getElementById('new-user-password-confirmation')
-const LOGIN_USER_FORM = document.getElementById('user-login-form')
-const LOGIN_USER_NAME = document.getElementById('login-user-name')
-const LOGIN_USER_PASSWORD = document.getElementById('login-user-password')
-const BASE_URL_USERS = 'http://127.0.0.1:3000/users/'
-const BASE_URL_USER_SESSIONS = 'http://127.0.0.1:3000/user_sessions'
 
 //FUNCTIONS
 function getTheHeadlines_INITIAL(){
@@ -80,6 +47,7 @@ function getTheHeadlines_INITIAL(){
     `${PRE_CATEGORY}${CATEGORY}`+
     `${PRE_PAGE}${PAGE}` +
     `${API_KEY}`
+    console.log(urlToGetFrom)
     get(urlToGetFrom).then(getAllTheHeadlinesThenKeepInSomeVariableAndThenRender)
 }
 
@@ -92,6 +60,7 @@ function getAllTheHeadlinesThenKeepInSomeVariableAndThenRender(initialArticlesOb
     } else {
         API_PAGE_INDICATOR=1
     }
+    console.log(API_PAGE_INDICATOR)
     renderPageForTheBatchSize(allObjectsToPassAroundLater)
 }
 
@@ -108,6 +77,7 @@ function renderPageForTheBatchSize(allObjectsToPassAroundLater) {
 
 function initiateOrUpdateTicker(){
     tempElement = []
+    // allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit).forEach((item)=>{
     allObjectsToPassAroundLater.articles.forEach((item)=>{
         tempElement.push('<<<')
         tempElement.push(item.title.split(' '))
@@ -122,27 +92,13 @@ function initiateOrUpdateTicker(){
 
 function showOneOfTheNewsOnThePage(article){
     let oneArticleDiv = document.createElement('div')
-    oneArticleDiv.classList.add('oneArticleDiv')
     let title = document.createElement('h2')
     title.innerText = article.title
     title.addEventListener('click',()=>populateDetailsForThisArticle(article))
     let sourceName = document.createElement('h4')
     sourceName.innerText = article.source.name
-    let saveForLaterButton = document.createElement('button')
-    saveForLaterButton.classList.add('saveForLaterButton')
-    saveForLaterButton.innerText = "Save for Later"
-    saveForLaterButton.hidden = !IS_USER_LOGGED_IN
-    saveForLaterButton.addEventListener("click",()=>saveForLaterButtonAction(article,saveForLaterButton))
-    oneArticleDiv.append(sourceName,saveForLaterButton,title)
+    oneArticleDiv.append(sourceName,title)
     MAIN_ARTICLE_UL.appendChild(oneArticleDiv)      
-}
-
-function saveForLaterButtonAction(article,saveForLaterButton){
-        let patchObject = {
-            add_to_saveforlater: article
-        }
-        patch(BASE_URL_USERS,LOGGED_IN_USER.id,patchObject).then((event)=>
-        saveForLaterButton.hidden = true)
 }
 
 function populateDetailsForThisArticle(article){
@@ -219,6 +175,7 @@ function initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections(){
     })
     CATEGORY = `=${selectedCategories[0]}&`
     selectedCategories =[]
+    // newLanguageAndCountrySelectionForm.hidden = true
     getTheHeadlines_INITIAL()
 }
 
@@ -233,49 +190,10 @@ function decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles(){
     } else {
         thisIsInitialOneOnThePage = true
         renderPageForTheBatchSize(allObjectsToPassAroundLater)
-    }
 }
-
-function initiateUserRegistration(){
-    event.preventDefault()
-    let newUserDetails ={
-        username: NEW_USER_NAME.value,
-        password: NEW_USER_PASSWORD.value,
-        password_confirmation: NEW_USER_PASSWORD_CONFIRMATION.value
-    }
-    let newUserObject = {
-        user: newUserDetails
-    }
-    post(BASE_URL_USERS,newUserObject).then(console.log)
-}
-
-function initiateUserLogin (){
-    event.preventDefault()
-    let loginUserDetails = {
-        username: LOGIN_USER_NAME.value,
-        password: LOGIN_USER_PASSWORD.value
-    }
-    let loginUserObject = {
-        user: loginUserDetails
-    }
-    post(BASE_URL_USER_SESSIONS,loginUserObject).then((user)=>successfulUserLoginActions(user))
-}
-
-function successfulUserLoginActions(user){
-    LOGGED_IN_USER = user
-    IS_USER_LOGGED_IN = true
-    document.querySelectorAll('.saveForLaterButton').forEach((item)=>{
-        item.hidden = false
-    })
-    let LOGGED_IN_USER_DETAILS_DIV = document.getElementById('logged-in-user-details')
-    let newH2 = document.createElement('h2')
-    newH2.innerText = `Logged in user username: ${LOGGED_IN_USER.username}`
-    LOGGED_IN_USER_DETAILS_DIV.innerHTML = ''
-    LOGGED_IN_USER_DETAILS_DIV.appendChild(newH2)
 }
 
 //INITIAL LOADERS, UNRELATED EVENT LISTENERS
+
 document.body.onload = startupActions
-NEW_USER_FORM.addEventListener("submit", initiateUserRegistration)
-LOGIN_USER_FORM.addEventListener("submit", initiateUserLogin)
 SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles)

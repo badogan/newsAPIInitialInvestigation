@@ -3,7 +3,7 @@
 *::after
 {
     margin: 0;
-    padding:2px;
+    padding:1px;
     box-sizing:inherit;
 }
 
@@ -12,23 +12,13 @@ html {
 }
 
 body {
-    background-color: rgb(240, 239, 239);
-}
-
-.theMainDiv {
-    display: flex;
-    width: 80%;
-    margin: 0 auto;
-    border: 0px solid black;
-    align-items: center;
-    padding: 20px;
+    background-color: burlywood;
 }
 
 div {
-    border: 0px solid black;
-    padding:2px;
-    /* height: 200px; */
-    /* width: 200px; */
+    border: 1px solid black;
+    /* height: 300px;
+    width: 300px; */
 }
 section {
     display: flex;
@@ -41,18 +31,11 @@ section {
 
 /* Will not be needed later */
 .language-and-country-selector-parent-div {
-    width: 50%;
+    width: 100%;
 }
 
-.parent-of-test1-and-login-and-signup-forms{
-    display: flex;
-}
-.test1{
-    width: 40%;
-}
-
-.login-and-signup-forms {
-    width: 60%
+.language-country{
+    width: 100%;
 }
 
 .nearly-everything {
@@ -61,15 +44,7 @@ section {
 }
 
 .left-articles-titles {
-    padding:2px;
     width: 50%;
-}
-
-.oneArticleDiv {
-    padding: 10px 2px 10px 2px;
-    width: 80%;
-    /* margin: 0 auto */
-
 }
 
 .right-article-details {
