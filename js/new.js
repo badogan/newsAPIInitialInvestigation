@@ -209,7 +209,7 @@ function createFormToGetTheLanguaageAndCountrySelection(){
         newDivForCategoryOptions.append(newInput,newLabel)
     })
     submitButton.innerText = "Submit selections"
-    newLanguageAndCountrySelectionForm.append(selectLanguageFieldName, selectLanguage, selectCountryFieldName,selectCountry,newDivForCategoryOptions,newBreak, submitButton)
+    newLanguageAndCountrySelectionForm.append(selectLanguageFieldName, selectLanguage, selectCountryFieldName,selectCountry,newDivForCategoryOptions,submitButton)
     newLanguageAndCountrySelectionForm.addEventListener("submit",initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections)
     LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV.appendChild(newLanguageAndCountrySelectionForm)
 }
