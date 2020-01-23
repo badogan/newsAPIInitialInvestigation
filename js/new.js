@@ -46,7 +46,7 @@ const SOURCE_DIV = document.querySelector('.source-link')
 const BATCH_SIZE = 5
 let CURRENT_PAGE = 1
 const TEXT_DIV = document.querySelector('.text')
-const SHOW_MORE_HEADLINES_BUTTON = document.querySelector('.more-btn')
+const SHOW_MORE_HEADLINES_BUTTON = document.getElementById('id-more-button')
 let allObjectsToPassAroundLater = {}
 const LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV = document.getElementById('language-and-country-selector-parent-div')
 const LANGUAGE_OPTIONS_ARRAY = ["en","tr","ar",'pt','ru']
@@ -69,6 +69,8 @@ const LOGIN_USER_NAME = document.getElementById('login-user-name')
 const LOGIN_USER_PASSWORD = document.getElementById('login-user-password')
 const BASE_URL_USERS = 'http://127.0.0.1:3000/users/'
 const BASE_URL_USER_SESSIONS = 'http://127.0.0.1:3000/user_sessions'
+const initiatorSignupButton = document.getElementById('initiatorSignupButton')
+const initiatorLoginButton = document.getElementById('initiatorLoginButton')
 
 //FUNCTIONS
 function getTheHeadlines_INITIAL(){
@@ -104,6 +106,7 @@ function renderPageForTheBatchSize(allObjectsToPassAroundLater) {
     allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit).forEach(showOneOfTheNewsOnThePage)
     populateDetailsForThisArticle(allObjectsToPassAroundLater.articles.slice(sliceLowerLimiit,sliceUpperLimit)[0])
     CURRENT_PAGE +=1
+    SHOW_MORE_HEADLINES_BUTTON.style.visibility = "visible"
     }
 
 function initiateOrUpdateTicker(){
@@ -115,7 +118,7 @@ function initiateOrUpdateTicker(){
     let tickerScale = CURRENT_PAGE * 20
     showTickerCoreFunction = setInterval(function(){
         allParts = tempElement.flat().slice(tickerScale,tickerScale+20).reduce((sum,element)=>sum+element+' ')
-        TICKER_ELEMENT.innerText = `${allParts.slice(0,100)}`
+        TICKER_ELEMENT.innerText = `${allParts.slice(0,170)}`
         if (tickerScale > (tempElement.flat().length-100)){tickerScale = 1} else {tickerScale++}
     },500);
 }
@@ -137,7 +140,7 @@ function showOneOfTheNewsOnThePage(article){
     saveForLaterButton.innerText = "Save for Later"
     saveForLaterButton.style.cursor = "pointer"
     saveForLaterButton.hidden = !IS_USER_LOGGED_IN
-    saveForLaterButton.addEventListener("click",()=>saveForLaterButtonAction(article,saveForLaterButton))
+    saveForLaterButton.addEventListener("click",()=>saveForLaterButtonAction(article,saveForLaterButton,divSourceNameAndSaveForLaterButton))
     let divSourceNameAndSaveForLaterButton = document.createElement('div')
     divSourceNameAndSaveForLaterButton.append(sourceName,saveForLaterButton)
     divSourceNameAndSaveForLaterButton.classList.add('divSourceNameAndSaveForLaterButton')
@@ -146,12 +149,16 @@ function showOneOfTheNewsOnThePage(article){
     MAIN_ARTICLE_UL.appendChild(oneArticleDiv)      
 }
 
-function saveForLaterButtonAction(article,saveForLaterButton){
+function saveForLaterButtonAction(article,saveForLaterButton,divSourceNameAndSaveForLaterButton){
         let patchObject = {
             add_to_saveforlater: article
         }
         patch(BASE_URL_USERS,LOGGED_IN_USER.id,patchObject).then((event)=>
-        saveForLaterButton.hidden = true)
+        saveForLaterButton.remove())
+        let checkMark = document.createElement('img')
+        checkMark.src = './images/tick.svg'
+        checkMark.classList.add('checkMark')
+        divSourceNameAndSaveForLaterButton.appendChild(checkMark)
 }
 
 function populateDetailsForThisArticle(article){
@@ -208,7 +215,10 @@ function createFormToGetTheLanguaageAndCountrySelection(){
         newLabel.innerText = element
         newDivForCategoryOptions.append(newInput,newLabel)
     })
-    submitButton.innerText = "Submit selections"
+    let newSpanForSubmitButton = document.createElement('span')
+    newSpanForSubmitButton.innerText = "Submit selections"
+    submitButton.classList.add('submit-selection-btn')
+    submitButton.appendChild(newSpanForSubmitButton)
     newLanguageAndCountrySelectionForm.append(selectLanguageFieldName, selectLanguage, selectCountryFieldName,selectCountry,newDivForCategoryOptions,submitButton)
     newLanguageAndCountrySelectionForm.addEventListener("submit",initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections)
     LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV.appendChild(newLanguageAndCountrySelectionForm)
@@ -279,9 +289,17 @@ function successfulUserLoginActions(user){
     })
     let LOGGED_IN_USER_DETAILS_DIV = document.getElementById('logged-in-user-details')
     let newH2 = document.createElement('h2')
-    newH2.innerText = `Logged in user username: ${LOGGED_IN_USER.username}`
+    newH2.innerText = `Welcome ${LOGGED_IN_USER.username}!`
     LOGGED_IN_USER_DETAILS_DIV.innerHTML = ''
     LOGGED_IN_USER_DETAILS_DIV.appendChild(newH2)
+}
+
+function initiatorLoginButtonActions(){
+    LOGIN_USER_FORM.style.visibility = "visible"
+}
+
+function initiatorSignupButtonActions(){
+    NEW_USER_FORM.style.visibility = "visible"
 }
 
 //INITIAL LOADERS, UNRELATED EVENT LISTENERS
@@ -289,3 +307,5 @@ document.body.onload = startupActions
 NEW_USER_FORM.addEventListener("submit", initiateUserRegistration)
 LOGIN_USER_FORM.addEventListener("submit", initiateUserLogin)
 SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles)
+initiatorLoginButton.addEventListener('click',initiatorLoginButtonActions)
+initiatorSignupButton.addEventListener('click',initiatorSignupButtonActions)

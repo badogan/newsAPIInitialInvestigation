@@ -12,11 +12,22 @@
     <div class="theMainDiv">
     <section>
         <div class='parent-of-test1-and-login-and-signup-forms'>
-            <div class="test1" id="language-and-country-selector-parent-div" class="jumbotron">
+                <div class="test1" id="language-and-country-selector-parent-div" class="jumbotron">
                     <!-- put the language and country selector form here -->
                   </div>
 
                   <div class='login-and-signup-forms'>
+                        <div class='login-and-signup-initiator-buttons'>
+                            <button id='initiatorLoginButton' class='Button-Login-Signup-Visible-Toggle'><span>Login</span></button>
+                            <button id='initiatorSignupButton' class='Button-Login-Signup-Visible-Toggle'><span>Signup</span></button>
+                        </div>
+                        <form id="user-login-form">
+                                <label for="login-user-name">Login User Name</label>
+                                <input type="text" class="form-control" id="login-user-name" placeholder="Please enter your name...">
+                                <label for="login-user-password">Password</label>
+                                <input type="password" class="form-control" id="login-user-password" placeholder="Please enter password...">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
                         <form id="new-user-form">
                                 <label for="new-user-name">New User Name</label>
                                 <input type="text" class="form-control" id="new-user-name" placeholder="Please enter your name...">
@@ -24,14 +35,7 @@
                                 <input type="password" class="form-control" id="new-user-password" placeholder="Please enter password...">
                                 <label for="new-user-password-reentry">Password Confirmation</label>
                                 <input type="password" class="form-control" id="new-user-password-confirmation" placeholder="Please enter password again...">
-                                <button type="submit" class="btn btn-primary">SIGN UP</button>
-                        </form>
-                        <form id="user-login-form">
-                                <label for="login-user-name">Login User Name</label>
-                                <input type="text" class="form-control" id="login-user-name" placeholder="Please enter your name...">
-                                <label for="login-user-password">Password</label>
-                                <input type="password" class="form-control" id="login-user-password" placeholder="Please enter password...">
-                                <button type="submit" class="btn btn-primary">LOGIN</button>
+                                <button type="submit" class="btn btn-primary">Sign up</button>
                         </form>
                         <div id='logged-in-user-details'>
                         </div>
@@ -51,7 +55,7 @@
                 <ul class='articles'>
                     <!-- <li>A sample</li> -->
                 </ul>
-                <button class='more-btn'> BRING MORE NEWS!</button>
+                <button id='id-more-button' class='more-btn'><span>Bring more news </span></button>
             </div>
             
             <div class='right-article-details'>
@@ -62,6 +66,7 @@
             </div>
         </div>
     </section>
+
 </div>
     <script src='js/new.js'></script>
 </body>
