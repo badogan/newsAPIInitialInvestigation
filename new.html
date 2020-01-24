@@ -18,8 +18,11 @@
 
                   <div class='login-and-signup-forms'>
                         <div class='login-and-signup-initiator-buttons'>
-                            <button id='initiatorLoginButton' class='Button-Login-Signup-Visible-Toggle'><span>Login</span></button>
-                            <button id='initiatorSignupButton' class='Button-Login-Signup-Visible-Toggle'><span>Signup</span></button>
+                            <button id='initiatorLoginButton' class='Button-Login-Signup-Logout-Visible-Toggle'><span>Login</span></button>
+                            <button id='initiatorSignupButton' class='Button-Login-Signup-Logout-Visible-Toggle'><span>Signup</span></button>
+                            <button id='initiatorLogoutButton' class='Button-Login-Signup-Logout-Visible-Toggle'><span>Logout</span></button>
+                            <div id='logged-in-user-details'>
+                                </div>
                         </div>
                         <form id="user-login-form">
                                 <label for="login-user-name">Login User Name</label>
@@ -37,8 +40,6 @@
                                 <input type="password" class="form-control" id="new-user-password-confirmation" placeholder="Please enter password again...">
                                 <button type="submit" class="btn btn-primary">Sign up</button>
                         </form>
-                        <div id='logged-in-user-details'>
-                        </div>
                   </div>
         </div>
 

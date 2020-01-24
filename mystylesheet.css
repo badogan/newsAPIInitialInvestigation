@@ -38,7 +38,8 @@ section {
 
 .ticker {
     width: 100%;
-    padding: 15px 0px 15px 0px;
+    padding: 10px 0px 10px 0px;
+    background-color: rgb(91, 91, 190);
 }
 
 /* Will not be needed later */
@@ -56,7 +57,6 @@ section {
 
 .login-and-signup-forms {
     width: 70%;
-    visibility: visible;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -74,6 +74,18 @@ section {
 
 #new-user-form {
     visibility: hidden;
+}
+
+#initiatorLogoutButton {
+    visibility: hidden;
+}
+
+#initiatorLoginButton {
+    visibility: visible
+}
+
+#initiatorSignupButton {
+    visibility: visible
 }
 
 .divSourceNameAndSaveForLaterButton{
@@ -214,7 +226,7 @@ section {
   }
   /* LOGIN | SIGNUP BUTTON ===== */
 
-.Button-Login-Signup-Visible-Toggle{
+.Button-Login-Signup-Logout-Visible-Toggle{
     visibility: visible;
     border: 1px solid blue;
     display: inline-block;
@@ -230,7 +242,7 @@ section {
     margin: 5px;
   }
   
-.Button-Login-Signup-Visible-Toggle span {
+.Button-Login-Signup-Logout-Visible-Toggle span {
     cursor: pointer;
     color: black;
     display: inline-block;
@@ -238,7 +250,7 @@ section {
     transition: 0.5s;
   }
   
-.Button-Login-Signup-Visible-Toggle span:after {
+.Button-Login-Signup-Logout-Visible-Toggle span:after {
     content: '\00bb';
     position: absolute;
     opacity: 0;
@@ -247,7 +259,7 @@ section {
     transition: 0.5s;
   }
   
-.Button-Login-Signup-Visible-Toggle:hover span {
+.Button-Login-Signup-Logout-Visible-Toggle:hover span {
     padding-right: 25px;
   }
 

@@ -71,6 +71,8 @@ const BASE_URL_USERS = 'http://127.0.0.1:3000/users/'
 const BASE_URL_USER_SESSIONS = 'http://127.0.0.1:3000/user_sessions'
 const initiatorSignupButton = document.getElementById('initiatorSignupButton')
 const initiatorLoginButton = document.getElementById('initiatorLoginButton')
+const initiatorLogoutButton = document.getElementById('initiatorLogoutButton')
+let LOGGED_IN_USER_DETAILS_DIV = document.getElementById('logged-in-user-details')
 
 //FUNCTIONS
 function getTheHeadlines_INITIAL(){
@@ -118,7 +120,7 @@ function initiateOrUpdateTicker(){
     let tickerScale = CURRENT_PAGE * 20
     showTickerCoreFunction = setInterval(function(){
         allParts = tempElement.flat().slice(tickerScale,tickerScale+20).reduce((sum,element)=>sum+element+' ')
-        TICKER_ELEMENT.innerText = `${allParts.slice(0,170)}`
+        TICKER_ELEMENT.innerText = `${allParts.slice(0,250)}`
         if (tickerScale > (tempElement.flat().length-100)){tickerScale = 1} else {tickerScale++}
     },500);
 }
@@ -266,7 +268,7 @@ function initiateUserRegistration(){
     let newUserObject = {
         user: newUserDetails
     }
-    post(BASE_URL_USERS,newUserObject).then(console.log)
+    post(BASE_URL_USERS,newUserObject).then((user)=>successfulUserLoginActions(user))
 }
 
 function initiateUserLogin (){
@@ -287,19 +289,41 @@ function successfulUserLoginActions(user){
     document.querySelectorAll('.saveForLaterButton').forEach((item)=>{
         item.hidden = false
     })
-    let LOGGED_IN_USER_DETAILS_DIV = document.getElementById('logged-in-user-details')
+    
     let newH2 = document.createElement('h2')
-    newH2.innerText = `Welcome ${LOGGED_IN_USER.username}!`
+    newH2.innerText = `Welcome ${LOGGED_IN_USER.username}   `
     LOGGED_IN_USER_DETAILS_DIV.innerHTML = ''
     LOGGED_IN_USER_DETAILS_DIV.appendChild(newH2)
+    LOGIN_USER_FORM.style.visibility = "hidden"
+    NEW_USER_FORM.style.visibility = "hidden"
+    initiatorSignupButton.style.visibility = 'hidden'
+    initiatorLoginButton.style.visibility = 'hidden'
+    initiatorLogoutButton.style.visibility = "visible"
 }
 
 function initiatorLoginButtonActions(){
+    initiatorLoginButton.style.visibility = 'hidden'
     LOGIN_USER_FORM.style.visibility = "visible"
 }
 
 function initiatorSignupButtonActions(){
+    initiatorSignupButton.style.visibility = 'hidden'
     NEW_USER_FORM.style.visibility = "visible"
+}
+
+function logoutActions(){
+    initiatorLogoutButton.style.visibility = 'hidden'
+    initiatorLoginButton.style.visibility = 'visible'
+    initiatorSignupButton.style.visibility = 'visible'
+    LOGGED_IN_USER = ''
+    IS_USER_LOGGED_IN = false
+    document.querySelectorAll('.saveForLaterButton').forEach((item)=>{
+        item.hidden = true
+    })
+    document.querySelectorAll('.checkMark').forEach((item)=>{
+        item.remove()
+    })
+    LOGGED_IN_USER_DETAILS_DIV.innerHTML = ''
 }
 
 //INITIAL LOADERS, UNRELATED EVENT LISTENERS
@@ -309,3 +333,4 @@ LOGIN_USER_FORM.addEventListener("submit", initiateUserLogin)
 SHOW_MORE_HEADLINES_BUTTON.addEventListener('click',decideIfAnotherFetchIsNeededOrKeepUsingThePreviousFetchedArticles)
 initiatorLoginButton.addEventListener('click',initiatorLoginButtonActions)
 initiatorSignupButton.addEventListener('click',initiatorSignupButtonActions)
+initiatorLogoutButton.addEventListener('click',logoutActions)
