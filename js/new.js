@@ -30,7 +30,7 @@ function patch(URI,id,patchObj){
 //CONSTANTS
 const NEWSAPI_TOP_HEADLINES_BASE_URL = 'https://newsapi.org/v2/top-headlines?'
 const PRE_COUNTRY = 'country'
-let COUNTRY = 'en'
+let COUNTRY = 'us'
 const PRE_LANGUAGE = 'language'
 let LANGUAGE = 'en'
 const PRE_CATEGORY = 'category'
@@ -51,11 +51,13 @@ let allObjectsToPassAroundLater = {}
 const LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV = document.getElementById('language-and-country-selector-parent-div')
 const LANGUAGE_OPTIONS_ARRAY = ["en","tr","ar",'pt','ru']
 const COUNTRY_OPTIONS_ARRAY = ["us","tr",'ae','de','pt','ru']
+const COUNTRY_NAMES_ARRAY = ['United States','Turkey','Dubai','Germany','Portugal','Russia']
 const CATEGORIES_ARRAY = ['business','entertainment','general','health','science','sports','technology']
 let selectedCategories = []
 const newLanguageAndCountrySelectionForm = document.createElement('form')
 const TICKER_ELEMENT = document.getElementById('ticker-content')
 let tempElement = []
+let tickerContent = []
 let showTickerCoreFunction = null
 let thisIsInitialOneOnThePage = true
 let LOGGED_IN_USER =''
@@ -120,7 +122,7 @@ function initiateOrUpdateTicker(){
     let tickerScale = CURRENT_PAGE * 20
     showTickerCoreFunction = setInterval(function(){
         allParts = tempElement.flat().slice(tickerScale,tickerScale+20).reduce((sum,element)=>sum+element+' ')
-        TICKER_ELEMENT.innerText = `${allParts.slice(0,250)}`
+        TICKER_ELEMENT.innerText = `${allParts.slice(0,400)}`
         if (tickerScale > (tempElement.flat().length-100)){tickerScale = 1} else {tickerScale++}
     },500);
 }
@@ -184,7 +186,7 @@ function populateDetailsForThisArticle(article){
 
 function createFormToGetTheLanguaageAndCountrySelection(){
     let selectLanguageFieldName = document.createElement('p')
-    selectLanguageFieldName.innerText = 'Select language'
+    selectLanguageFieldName.innerText = 'Language'
     let selectLanguage = document.createElement('select')
     selectLanguage.id = 'select-language'
     LANGUAGE_OPTIONS_ARRAY.forEach(element=>{
@@ -192,15 +194,30 @@ function createFormToGetTheLanguaageAndCountrySelection(){
         newOption.innerText = element
         selectLanguage.appendChild(newOption)
     })
+    let divSelectLanguageFieldNameAndSelectLanguage = document.createElement('div')
+    divSelectLanguageFieldNameAndSelectLanguage.classList.add('divSelectLanguageFieldNameAndSelectLanguage')
+    divSelectLanguageFieldNameAndSelectLanguage.append(selectLanguageFieldName,selectLanguage)
+    //==
     let selectCountryFieldName = document.createElement('p')
-    selectCountryFieldName.innerText = 'Select country'
+    selectCountryFieldName.innerText = 'Country'
     let selectCountry = document.createElement('select')
     selectCountry.id = 'select-country'
-    COUNTRY_OPTIONS_ARRAY.forEach(element=>{
+    COUNTRY_NAMES_ARRAY.forEach(element=>{
+    // COUNTRY_OPTIONS_ARRAY.forEach(element=>{
         let newOption = document.createElement('option')
         newOption.innerText = element
         selectCountry.appendChild(newOption)
     })
+    let divSelectCountryFieldNameAndSelectCountry = document.createElement('div')
+    divSelectCountryFieldNameAndSelectCountry.classList.add('divSelectCountryFieldNameAndSelectCountry')
+    divSelectCountryFieldNameAndSelectCountry.appendChild(selectCountry)
+    // divSelectCountryFieldNameAndSelectCountry.append(selectCountryFieldName,selectCountry)
+    //==
+    let divAggregatorForLanguageAndCountry = document.createElement('div')
+    divAggregatorForLanguageAndCountry.classList.add('divAggregatorForLanguageAndCountry')
+    // divAggregatorForLanguageAndCountry.append(divSelectCountryFieldNameAndSelectCountry,divSelectLanguageFieldNameAndSelectLanguage)
+    divAggregatorForLanguageAndCountry.appendChild(divSelectCountryFieldNameAndSelectCountry)
+    //==
     let submitButton = document.createElement('button')
     let newBreak = document.createElement('br')
     let newDivForCategoryOptions = document.createElement('div')
@@ -221,7 +238,10 @@ function createFormToGetTheLanguaageAndCountrySelection(){
     newSpanForSubmitButton.innerText = "Submit selections"
     submitButton.classList.add('submit-selection-btn')
     submitButton.appendChild(newSpanForSubmitButton)
-    newLanguageAndCountrySelectionForm.append(selectLanguageFieldName, selectLanguage, selectCountryFieldName,selectCountry,newDivForCategoryOptions,submitButton)
+    //
+    divAggregatorForLanguageAndCountry.appendChild(submitButton)
+    //
+    newLanguageAndCountrySelectionForm.append(divAggregatorForLanguageAndCountry,newDivForCategoryOptions)
     newLanguageAndCountrySelectionForm.addEventListener("submit",initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections)
     LANGUAGE_AND_COUNTRY_SELECTOR_FORM_PARENT_DIV.appendChild(newLanguageAndCountrySelectionForm)
 }
@@ -229,10 +249,12 @@ function createFormToGetTheLanguaageAndCountrySelection(){
 function initialHeadlinesLoadBasedOnTheLanguageAndCountrySelections(){
     event.preventDefault()
     API_PAGE_INDICATOR =1 
-    let LANGUAGE_SELECTION = document.getElementById('select-language')
-    LANGUAGE = `=${LANGUAGE_SELECTION.value}&`
+    // let LANGUAGE_SELECTION = document.getElementById('select-language')
+    LANGUAGE_FUTURE_IMPROVEMENT = 'en'
+    LANGUAGE = `=${LANGUAGE_FUTURE_IMPROVEMENT}&`
     let COUNTRY_SELECTION = document.getElementById('select-country')
-    COUNTRY = `=${COUNTRY_SELECTION.value}&`
+    let indexOfCountryLongName = COUNTRY_NAMES_ARRAY.indexOf(COUNTRY_SELECTION.value)
+    COUNTRY = `=${COUNTRY_OPTIONS_ARRAY[indexOfCountryLongName]}&`
     let allCategoryRadioButtons = document.querySelectorAll('.category')
     allCategoryRadioButtons.forEach(item=>{
         if (item.checked){
